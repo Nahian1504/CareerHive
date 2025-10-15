@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>My Applications</h2>
+
+{% if applications %}
+    <ul class="list-group">
+        {% for app in applications %}
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                <span>
+                    <strong>{{ app.job.title }}</strong> at {{ app.job.company }} ({{ app.job.location }})
+                    <br>
+                    <small>Status: {{ app.status }} | Applied on {{ app.applied_at|date:"Y-m-d" }}</small>
+                </span>
+                <a href="{{ app.job.link }}" target="_blank" class="btn btn-sm btn-outline-primary">View Job</a>
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>You haven’t tracked any applications yet.</p>
+{% endif %}
+
+<a href="{% url 'jobs:home' %}" class="btn btn-secondary mt-3">Back to Search</a>
+{% endblock %}
