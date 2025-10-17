@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>My Bookmarks</h2>
+
+{% if bookmarks %}
+    <ul class="list-group">
+        {% for bookmark in bookmarks %}
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                <span>
+                    <strong>{{ bookmark.job.title }}</strong> at {{ bookmark.job.company }} ({{ bookmark.job.location }})
+                </span>
+                <a href="{{ bookmark.job.link }}" target="_blank" class="btn btn-sm">Apply</a>
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>You haven’t bookmarked any jobs yet.</p>
+{% endif %}
+
+<a href="{% url 'jobs:home' %}" class="btn btn-secondary mt-3">Back to Search</a>
+{% endblock %}
