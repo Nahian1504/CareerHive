@@ -1,23 +1,31 @@
 {% extends "base.html" %}
-{% block content %}
-<h2 class="mb-4">My Applications</h2>
-
-{% if applications %}
-    {% for app in applications %}
-        <div class="job-card mb-3 d-flex justify-content-between align-items-center">
-            <div>
-                <strong>{{ app.job.title }}</strong> at {{ app.job.company }} ({{ app.job.location }})
-                <br>
-                <small>Status: {{ app.status|capfirst }} | Applied on {{ app.applied_at|date:"Y-m-d" }}</small>
-            </div>
-            <div>
-                <a href="{{ app.job.link }}" target="_blank" class="btn btn-sm btn-outline-primary">View Job</a>
-            </div>
-        </div>
-    {% endfor %}
-{% else %}
-    <p>You haven’t tracked any applications yet.</p>
-{% endif %}
-
-<a href="{% url 'jobs:home' %}" class="btn btn-secondary mt-3">Back to Dashboard</a>
+<!-- Sticky topbar for page title -->
+<div class="sticky-topbar">
+{% block logo_text %}
+<h2 class="mb-0">My Applications</h2>
 {% endblock %}
+</div>
+{% block content %}
+
+<!-- Scrollable content -->
+<div class="job-listings-scroll" style="margin-top: 10px;">
+    {% if applications %}
+        {% for app in applications %}
+            <div class="job-card mb-3 d-flex justify-content-between align-items-center">
+                <div>
+                    <strong>{{ app.job.title }}</strong> at {{ app.job.company }} ({{ app.job.location }})
+                    <br>
+                    <small>Status: {{ app.status|capfirst }} | Applied on {{ app.applied_at|date:"Y-m-d" }}</small>
+                </div>
+                <div>
+                    <a href="{{ app.job.link }}" target="_blank" class="btn btn-sm btn-outline-primary">View Job</a>
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>You haven’t tracked any applications yet.</p>
+    {% endif %}
+</div>
+
+{% endblock %}
+
