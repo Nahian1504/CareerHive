@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+
+<!-- Sticky topbar for page title -->
+<div class="sticky-topbar">
+{% block logo_text %}
+<h2 class="mb-0" style="margin-left: 10px;">Welcome {{ user.username }}!</h2>
+{% endblock %}
+</div>
+
+{% block content %}
+
+<!-- Sticky Filter/Search Bar -->
+<div class="job-filters sticky-filters">
+    <form method="get" class="row g-2 align-items-center">
+        <div class="col-md-4">
+            <input type="text" name="search" placeholder="Search jobs by keywords" value="{{ query }}" class="form-control">
+        </div>
+        <div class="col-md-3">
+            <input type="text" name="location" placeholder="Location" value="{{ location_filter }}" class="form-control">
+        </div>
+        <div class="col-md-2">
+            <select name="source" class="form-select">
+                <option value="">All Sources</option>
+                <option value="Indeed" {% if source_filter == "Indeed" %}selected{% endif %}>Indeed</option>
+                <option value="Adzuna" {% if source_filter == "Adzuna" %}selected{% endif %}>Adzuna</option>
+                <option value="USAJobs" {% if source_filter == "USAJobs" %}selected{% endif %}>USAJobs</option>
+                <option value="CareerJet" {% if source_filter == "CareerJet" %}selected{% endif %}>CareerJet</option>
+            </select>
+        </div>
+        <div class="col-md-2">
+            <select name="sort" class="form-select">
+                <option value="title" {% if sort_by == "title" %}selected{% endif %}>Title</option>
+                <option value="company" {% if sort_by == "company" %}selected{% endif %}>Company</option>
+                <option value="date_posted" {% if sort_by == "date_posted" %}selected{% endif %}>Date</option>
+            </select>
+        </div>
+        <div class="col-md-1">
+            <button type="submit" class="btn btn-primary w-100">Filter</button>
+        </div>
+    </form>
+
+    <h3 class="mt-2 mb-2">Available Jobs</h3>
+</div>
+
+<!-- Scrollable Job Listings -->
+<div class="job-listings-scroll">
+    {% if page_obj %}
+        {% for item in page_obj %}
+            {% with job=item.job matching_skills=item.matching_skills highlight=item.highlight %}
+            <div class="job-card mb-3 p-3" {% if highlight %}style="border-left: 5px solid #9b5de5;"{% endif %}>
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <strong>{{ job.title }}</strong> at {{ job.company }} ({{ job.location }})
+                        {% if matching_skills %}
+                        <div class="mt-2">
+                            <small>Matching Skills:</small>
+                            <div>
+                                {% for skill in matching_skills %}
+                                    <span class="badge bg-primary me-1 mb-1">{{ skill }}</span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="d-flex gap-2 flex-wrap">
+                        <a href="{% url 'jobs:apply_job' job.id %}" class="btn btn-sm btn-outline-primary">Mark as Applied</a>
+                        <a href="{% url 'jobs:bookmark_job' job.id %}" class="btn btn-sm btn-outline-primary">Bookmark</a>
+                        <a href="{{ job.link }}" target="_blank" class="btn btn-sm btn-outline-primary">Apply Externally</a>
+                    </div>
+                </div>
+            </div>
+            {% endwith %}
+        {% endfor %}
+
+        <!-- Fixed Pagination at bottom -->
+        <nav class="pagination-container">
+            <ul class="pagination justify-content-center">
+                {% if page_obj.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?search={{ query }}&page={{ page_obj.previous_page_number }}">Previous</a>
+                </li>
+                {% endif %}
+                <li class="page-item disabled">
+                    <span class="page-link">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+                </li>
+                {% if page_obj.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?search={{ query }}&page={{ page_obj.next_page_number }}">Next</a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+    {% else %}
+        <p>No jobs to display. Try searching!</p>
+    {% endif %}
+</div>
+
+{% endblock %}
