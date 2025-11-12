@@ -6,6 +6,7 @@ from django.contrib import messages
 from .scraper import get_jobs
 from .models import Job, Bookmark, Application, Resume
 from .utils import resume_parser
+from .ai_helper import suggest_jobs
 
 # Home view with resume skill-based job matching
 @login_required
@@ -162,3 +163,40 @@ def upload_resume(request):
         "file_type": file_type,
         "user_resumes": user_resumes,
     })
+
+
+# AI-based Job Suggestions view
+@login_required
+def ai_job_suggestions(request):
+    user_resumes = Resume.objects.filter(user=request.user)
+    all_skills = []
+
+    for resume in user_resumes:
+        if resume.extracted_skills:
+            all_skills += [s.strip() for s in resume.extracted_skills.split(",")]
+    
+    if not all_skills:
+        return render(request, "jobs/suggestions.html", {
+            "ai_suggestions": [],
+            "resume_feedback": ["No skills found in your uploaded resumes. Please upload a resume first."],
+            "skills": [],
+        })
+
+    ai_suggestions = suggest_jobs(all_skills)
+
+    return render(request, "jobs/suggestions.html", {
+        "ai_suggestions": ai_suggestions,
+    })
+
+
+# Profile view
+@login_required
+def profile_view(request):
+    user = request.user
+
+    if request.method == "POST" and "resume" in request.FILES:
+        Resume.objects.create(user=user, file=request.FILES["resume"])
+
+    latest_resume = Resume.objects.filter(user=user).order_by("-uploaded_at").first()
+
+    return render(request, "jobs/profile.html", {"user": user, "resume": latest_resume})
