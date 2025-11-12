@@ -1,10 +1,29 @@
 {% extends "base.html" %}
+
 {% block content %}
-<h2>Login</h2>
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit" class="btn btn-primary">Login</button>
-</form>
-<a href="{% url 'jobs:signup' %}" style="color: #ffffff;">Sign up</a>
+<div class="container text-center mt-2">
+    <h2 class="mb-4">Login</h2>
+
+    <form method="post" class="mx-auto" style="max-width: 400px;">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary w-100">Login</button>
+    </form>
+
+    <!-- Forgot Password link -->
+    <div class="mt-2">
+        <span class="text-center mt-3">Forgot Password?</span>
+        <a href="{% url 'jobs:forgot_password' %}" class="btn btn-primary">
+            Reset</a>
+    </div>
+
+    <div class="d-flex justify-content-center align-items-center gap-2 mt-2">
+        <span class="text-center mt-3">Don’t have an account?</span>
+        <a href="{% url 'jobs:signup' %}" class="btn btn-primary">
+            Sign up
+        </a>
+    </div>
+</div>
 {% endblock %}
+
+
