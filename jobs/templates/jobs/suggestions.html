@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+<!-- Sticky topbar for page title -->
+<div class="sticky-topbar">
+{% block logo_text %}
+<h2 class="mb-0">Suggestions</h2>
+{% endblock %}
+</div>
+
+{% block content %}
+<div class="job-listings-scroll mt-3">
+
+    {% if skills %}
+        <div class="job-card mb-3">
+            <strong>Your Extracted Skills:</strong>
+            <div class="mt-2">
+                {% for s in skills %}
+                    <span class="badge bg-secondary me-1 mb-1">{{ s }}</span>
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+
+    {% if ai_suggestions %}
+        {% for suggestion in ai_suggestions %}
+            <div class="job-card mb-3 d-flex justify-content-between align-items-center">
+                <div>
+                    <strong>{{ suggestion }}</strong>
+                </div>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    {% if resume_feedback %}
+        <div class="job-card mb-3">
+            <strong>Resume Improvement Tips:</strong>
+            <ul class="mt-2 mb-0">
+                {% for tip in resume_feedback %}
+                    <li>{{ tip }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+
+    {% if not skills and not ai_suggestions %}
+        <div class="job-card">
+            <p>You have no uploaded resumes yet. Please upload one to get suggestions.</p>
+        </div>
+    {% endif %}
+
+</div>
+{% endblock %}

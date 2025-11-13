@@ -8,8 +8,11 @@ urlpatterns = [
     path("signup/", views.signup, name="signup"),
     path("upload_resume/", views.upload_resume, name="upload_resume"),
     path("suggestions/", views.ai_job_suggestions, name="ai_suggestions"),
+ feature/Myprofile
     path('profile/', views.profile_view, name='profile'),
 
+
+    main
 
     # Bookmarks & applications
     path("bookmark/<int:job_id>/", views.bookmark_job, name="bookmark_job"),
