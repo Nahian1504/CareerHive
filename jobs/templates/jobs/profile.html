@@ -1,10 +1,79 @@
 {% extends "base.html" %}
+<<<<<<< HEAD
+
+=======
+>>>>>>> 8bd9ce9d5dd54921b57d01b5e6094e507393bd95
 <!-- Sticky topbar for page title -->
 <div class="sticky-topbar">
 {% block logo_text %}
 <h2 class="mb-0">{{ user.username }}</h2>
 {% endblock %}
 </div>
+<<<<<<< HEAD
+
+{% block content %}
+<div class="job-listings-scroll" style="margin-top: 10px;">
+    <div class="profile-card p-4 rounded">
+
+
+        <div class="profile-info">
+
+            <!-- First Name -->
+            <p>
+                <strong>First Name:</strong>
+                <span id="first_name_display">{{ user.first_name|default:"-" }}</span>
+                <button class="btn btn-sm btn-outline-secondary" onclick="toggleEdit('first_name')">Edit</button>
+            </p>
+            <div id="first_name_edit" style="display:none;" class="mb-2">
+                <input type="text" id="first_name_input" value="{{ user.first_name }}">
+                <button class="btn btn-sm btn-primary" onclick="saveField('first_name')">Save</button>
+            </div>
+
+            <!-- Last Name -->
+            <p>
+                <strong>Last Name:</strong>
+                <span id="last_name_display">{{ user.last_name|default:"-" }}</span>
+                <button class="btn btn-sm btn-outline-secondary" onclick="toggleEdit('last_name')">Edit</button>
+            </p>
+            <div id="last_name_edit" style="display:none;" class="mb-2">
+                <input type="text" id="last_name_input" value="{{ user.last_name }}">
+                <button class="btn btn-sm btn-primary" onclick="saveField('last_name')">Save</button>
+            </div>
+
+            <!-- Email -->
+            <p>
+                <strong>Email:</strong>
+                <span id="email_display">{{ user.email|default:"-" }}</span>
+                <button class="btn btn-sm btn-outline-secondary" onclick="toggleEdit('email')">Edit</button>
+            </p>
+            <div id="email_edit" style="display:none;" class="mb-2">
+                <input type="email" id="email_input" value="{{ user.email }}">
+                <button class="btn btn-sm btn-primary" onclick="saveField('email')">Save</button>
+            </div>
+
+            <!-- Password -->
+            <p>
+                <strong>Password:</strong>
+                <span id="password_display">********</span>
+                <button class="btn btn-sm btn-outline-secondary" onclick="toggleEdit('password')">Edit</button>
+            </p>
+            <div id="password_edit" style="display:none;" class="mb-2">
+                <input type="password" id="password_input" placeholder="New password" class="mb-1">
+                <input type="password" id="password_confirm_input" placeholder="Confirm new password">
+                <button class="btn btn-sm btn-primary" onclick="saveField('password')">Save</button>
+            </div>
+
+            <!-- Resume -->
+            <p>
+                <strong>Latest Resume:</strong>
+                {% if resume %}
+                    <a href="{{ resume.file.url }}" class="btn btn-sm btn-outline-primary" target="_blank">View Resume</a>
+                    {% if resume.skills %}
+                        <div class="mt-1">
+                            <strong>Extracted Skills:</strong> {{ resume.skills|join:", " }}
+                        </div>
+                    {% endif %}
+=======
 {% block content %}
 <div class="job-listings-scroll" style="margin-top: 10px;">
     <div class="profile-card p-4 rounded">
@@ -20,11 +89,83 @@
                 <strong>Resume:</strong>
                 {% if resume %}
                     <a href="{{ resume.file.url }}" class="btn btn-sm btn-outline-primary" target="_blank">View Resume</a>
+>>>>>>> 8bd9ce9d5dd54921b57d01b5e6094e507393bd95
                 {% else %}
                     <span>No resume uploaded</span>
                 {% endif %}
             </p>
 
+<<<<<<< HEAD
+            <!-- Upload new resume -->
+             <strong>Upload Resume:</strong>
+            <form method="post" enctype="multipart/form-data" class="mt-3">
+                {% csrf_token %}
+                <div class="d-flex gap-2 align-items-center">
+                    <input type="file" name="resume" class="form-control">
+                    <button type="submit" class="btn btn-primary btn-sm">Upload</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+<script>
+function toggleEdit(field) {
+    document.getElementById(field + "_display").style.display = "none";
+    document.getElementById(field + "_edit").style.display = "block";
+}
+
+function saveField(field) {
+    let value;
+    if (field === 'password') {
+        const passwordInput = document.getElementById('password_input').value;
+        const passwordConfirm = document.getElementById('password_confirm_input').value;
+
+        if (passwordInput !== passwordConfirm) {
+            alert("Passwords do not match!");
+            return;
+        }
+
+        value = passwordInput;
+    } else {
+        value = document.getElementById(field + "_input").value;
+    }
+
+    const csrftoken = '{{ csrf_token }}';
+
+    fetch("{% url 'jobs:update_profile_field' %}", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": csrftoken
+        },
+        body: JSON.stringify({ field: field, value: value })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if(data.success) {
+            if(field === 'password') {
+                document.getElementById(field + "_display").innerText = "********";
+            } else {
+                document.getElementById(field + "_display").innerText = value || "-";
+            }
+            document.getElementById(field + "_display").style.display = "inline";
+            document.getElementById(field + "_edit").style.display = "none";
+        } else {
+            alert("Error updating field: " + data.error);
+        }
+    })
+    .catch(err => {
+        console.error("Error updating profile field:", err);
+        alert("Something went wrong. Please try again.");
+    });
+}
+
+</script>
+
+{% endblock %}
+=======
             <!-- Upload new resume directly here -->
             <form method="post" enctype="multipart/form-data" class="mt-3">
                 {% csrf_token %}
@@ -39,3 +180,4 @@
 </div>
 {% endblock %}
 
+>>>>>>> 8bd9ce9d5dd54921b57d01b5e6094e507393bd95
