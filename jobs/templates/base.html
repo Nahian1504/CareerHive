@@ -1,4 +1,4 @@
-{% load static %}
+feature/add-logo
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -15,6 +15,7 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
+<<<<<<< HEAD
         /* Sidebar */
         .sidebar {
             height: 100vh;
@@ -122,6 +123,10 @@
             background-color: #1e1e2f;
             padding: 0 0;
             z-index: 900;
+=======
+        .container {
+            margin-top: 50px;
+>>>>>>> feature/add-logo
         }
 
         /* Job Cards */
@@ -144,19 +149,38 @@
             border: none;
             transition: 0.3s;
         }
+<<<<<<< HEAD
         .btn-primary:hover { background-color: #f15bb5; }
+=======
+        .btn-primary:hover {
+            background-color: #f15bb5;
+        }
+>>>>>>> feature/add-logo
         .btn-secondary {
             background-color: #f4f4f4;
             color: #050505;
             transition: 0.3s;
         }
+<<<<<<< HEAD
         .btn-secondary:hover { background-color: #c2c2c2; }
+=======
+        .btn-secondary:hover {
+            background-color: #c2c2c2;
+        }
+>>>>>>> feature/add-logo
         .btn-outline-primary {
             border-color: #9b5de5;
             color: #9b5de5;
             transition: 0.3s;
         }
+<<<<<<< HEAD
         .btn-outline-primary:hover { background-color: #9b5de5; color: #fff; }
+=======
+        .btn-outline-primary:hover {
+            background-color: #9b5de5;
+            color: #fff;
+        }
+>>>>>>> feature/add-logo
 
         /* Pagination */
         nav .page-item .page-link {
@@ -165,8 +189,18 @@
             border: none;
             transition: 0.3s;
         }
+<<<<<<< HEAD
         nav .page-item .page-link:hover { background-color: #9b5de5; }
         nav .page-item.disabled .page-link { background-color: #2b2b3d; color: #777; }
+=======
+        nav .page-item .page-link:hover {
+            background-color: #9b5de5;
+        }
+        nav .page-item.disabled .page-link {
+            background-color: #2b2b3d;
+            color: #777;
+        }
+>>>>>>> feature/add-logo
 
         /* Inputs and selects */
         input, select {
@@ -175,6 +209,7 @@
             background-color: #2b2b3d;
             color: #f1f1f1;
         }
+<<<<<<< HEAD
         input::placeholder { color: #aaa; }
         select { color: #f1f1f1; }
 
@@ -217,6 +252,56 @@
     {% endif %}
 
     <div class="{% if not request.resolver_match.url_name == 'login' and not request.resolver_match.url_name == 'signup' %}main-content{% endif %}">
+=======
+        input::placeholder {
+            color: #aaa;
+        }
+        select {
+            color: #f1f1f1;
+        }
+
+        /* Headings */
+        h2, h3, h4 {
+            color: #f4f4f4;
+        }
+
+        /* Upload card */
+        .upload-card {
+            padding: 20px;
+            margin-bottom: 25px;
+            background-color: #2b2b3d;
+            border-radius: 12px;
+            box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .upload-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.4);
+        }
+
+        /* Badges for skills */
+        .badge-skill {
+            background-color: #9b5de5;
+            color: #fff;
+            margin-right: 5px;
+            margin-top: 3px;
+            font-size: 0.85em;
+        }
+
+
+
+        /* Links */
+        a {
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+>>>>>>> feature/add-logo
         {% block content %}
         {% endblock %}
     </div>
