@@ -4,6 +4,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.contrib import messages
+from requests import request
 from .scraper import get_jobs
 from .models import Job, Bookmark, Application, Resume
 from .utils import resume_parser
@@ -15,10 +16,20 @@ from django.contrib.auth.models import User
 from django.contrib.auth import login
 from django.contrib.auth.forms import AuthenticationForm
 from django.conf import settings
+from .utils.preserve_get_params import preserve_get_params
+from django.urls import reverse
+from urllib.parse import urlencode
 
-# Home view with resume skill-based job matching
 @login_required
 def home(request):
+    if request.GET:
+        request.session['job_filters'] = request.GET.dict()
+    else:
+        request.GET = request.GET.copy()
+        filters = request.session.get('job_filters', {})
+        for k, v in filters.items():
+            request.GET[k] = v
+
     query = request.GET.get("search", "")
     location_filter = request.GET.get("location", "")
     source_filter = request.GET.get("source", "")
@@ -83,6 +94,7 @@ def home(request):
     })
 
 
+
 # Signup view
 def signup(request):
     class InlineUserCreationForm(UserCreationForm):
@@ -117,17 +129,24 @@ def login_view(request):
     return render(request, "registration/login.html", {"form": form})
 
 
+def redirect_home_with_filters(request):
+    filters = request.session.get('job_filters', {})
+    url = f"{reverse('jobs:home')}?{urlencode(filters)}" if filters else reverse('jobs:home')
+    return redirect(url)
+
 # Bookmark job
 @login_required
+@preserve_get_params()
 def bookmark_job(request, job_id):
     job = get_object_or_404(Job, id=job_id)
     Bookmark.objects.get_or_create(user=request.user, job=job)
     messages.success(request, "Job bookmarked!")
-    return redirect("jobs:home")
+    return redirect_home_with_filters(request)
 
 
 # View bookmarks
 @login_required
+@preserve_get_params()
 def my_bookmarks(request):
     bookmarks = Bookmark.objects.filter(user=request.user)
     return render(request, "jobs/bookmarks.html", {"bookmarks": bookmarks})
@@ -135,6 +154,7 @@ def my_bookmarks(request):
 
 # Mark job as applied
 @login_required
+@preserve_get_params()
 def apply_job(request, job_id):
     job = get_object_or_404(Job, id=job_id)
     application, created = Application.objects.get_or_create(user=request.user, job=job)
@@ -142,11 +162,12 @@ def apply_job(request, job_id):
         messages.success(request, f'"{job.title}" marked as applied!')
     else:
         messages.info(request, f'You have already marked "{job.title}" as applied.')
-    return redirect("jobs:home")
+    return redirect_home_with_filters(request)
 
 
 # View applications
 @login_required
+@preserve_get_params()
 def my_applications(request):
     apps = Application.objects.filter(user=request.user)
     return render(request, "jobs/applications.html", {"applications": apps})
@@ -196,6 +217,7 @@ def upload_resume(request):
 
 # AI-based Job Suggestions view
 @login_required
+@preserve_get_params()
 def ai_job_suggestions(request):
     user_resumes = Resume.objects.filter(user=request.user)
     all_skills = []
@@ -220,6 +242,7 @@ def ai_job_suggestions(request):
 
 # Profile view
 @login_required
+@preserve_get_params()
 def profile_view(request):
     user = request.user
 
@@ -316,6 +339,7 @@ def reset_password(request):
     return render(request, "jobs/reset_password.html")
 
 # Resume view
+@preserve_get_params()
 @login_required
 def resumes_view(request):
     user_resumes = Resume.objects.filter(user=request.user).order_by('-uploaded_at')
