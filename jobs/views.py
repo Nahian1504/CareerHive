@@ -7,6 +7,8 @@ from .scraper import get_jobs
 from .models import Job, Bookmark, Application, Resume
 from .utils import resume_parser
 from .ai_helper import suggest_jobs
+feature/Myprofile
+
 from django.http import JsonResponse
 from django.contrib.auth.hashers import make_password
 from django import forms
@@ -15,6 +17,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth import login
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import login
+main
 
 # Home view with resume skill-based job matching
 @login_required
@@ -229,6 +232,8 @@ def profile_view(request):
     latest_resume = Resume.objects.filter(user=user).order_by("-uploaded_at").first()
 
     return render(request, "jobs/profile.html", {"user": user, "resume": latest_resume})
+ feature/Myprofile
+
 
 
 # AJAX handler for inline edits
@@ -298,3 +303,4 @@ def reset_password(request):
             return redirect("login")
 
     return render(request, "jobs/reset_password.html")
+     main
