@@ -7,12 +7,23 @@ from .scraper import get_jobs
 from .models import Job, Bookmark, Application, Resume
 from .utils import resume_parser
 from .ai_helper import suggest_jobs
+<<<<<<< HEAD
+=======
+feature/Myprofile
+
+>>>>>>> 8bd9ce9d5dd54921b57d01b5e6094e507393bd95
 from django.http import JsonResponse
 from django.contrib.auth.hashers import make_password
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.contrib.auth import login
+<<<<<<< HEAD
+=======
+from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth import login
+main
+>>>>>>> 8bd9ce9d5dd54921b57d01b5e6094e507393bd95
 
 # Home view with resume skill-based job matching
 @login_required
@@ -98,8 +109,26 @@ def signup(request):
             return redirect("jobs:home")
     else:
         form = InlineUserCreationForm()
+<<<<<<< HEAD
+=======
 
     return render(request, "jobs/signup.html", {"form": form})
+>>>>>>> 8bd9ce9d5dd54921b57d01b5e6094e507393bd95
+
+    return render(request, "jobs/signup.html", {"form": form})
+
+# Login view
+def login_view(request):
+    if request.method == "POST":
+        form = AuthenticationForm(request, data=request.POST)
+        if form.is_valid():
+            user = form.get_user()
+            login(request, user)
+            return redirect('jobs:home')  # your home page
+    else:
+        form = AuthenticationForm()
+    return render(request, "registration/login.html", {"form": form})
+
 
 # Bookmark job
 @login_required
@@ -213,6 +242,11 @@ def profile_view(request):
     latest_resume = Resume.objects.filter(user=user).order_by("-uploaded_at").first()
 
     return render(request, "jobs/profile.html", {"user": user, "resume": latest_resume})
+<<<<<<< HEAD
+=======
+ feature/Myprofile
+
+>>>>>>> 8bd9ce9d5dd54921b57d01b5e6094e507393bd95
 
 
 # AJAX handler for inline edits
@@ -243,4 +277,47 @@ def update_profile_field(request):
             return JsonResponse({"success": True})
         except Exception as e:
             return JsonResponse({"success": False, "error": str(e)})
+<<<<<<< HEAD
     return JsonResponse({"success": False, "error": "Invalid request"})
+=======
+    return JsonResponse({"success": False, "error": "Invalid request"})
+
+# Forgot Password View
+def forgot_password(request):
+    if request.method == "POST":
+        username = request.POST.get("username")
+        email = request.POST.get("email")
+        try:
+            user = User.objects.get(username=username, email=email)
+            request.session["reset_user_id"] = user.id
+            return redirect("jobs:reset_password") 
+        except User.DoesNotExist:
+            messages.error(request, "No account found with that username and email.")
+            return redirect("jobs:forgot_password")  
+    return render(request, "jobs/forgot_password.html")
+
+# Reset Password View
+def reset_password(request):
+    user_id = request.session.get("reset_user_id")
+    if not user_id:
+        messages.error(request, "Unauthorized access.")
+        return redirect("login")
+
+    if request.method == "POST":
+        new_password = request.POST.get("new_password")
+        confirm_password = request.POST.get("confirm_password")
+
+        if new_password != confirm_password:
+            messages.error(request, "Passwords do not match.")
+            return redirect("reset_password")
+        else:
+            user = User.objects.get(id=user_id)
+            user.set_password(new_password)
+            user.save()
+            messages.success(request, "Password updated successfully! Please login.")
+            request.session.pop("reset_user_id", None)
+            return redirect("login")
+
+    return render(request, "jobs/reset_password.html")
+     main
+>>>>>>> 8bd9ce9d5dd54921b57d01b5e6094e507393bd95
