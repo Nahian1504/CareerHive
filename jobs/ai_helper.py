@@ -2,7 +2,7 @@ from sentence_transformers import SentenceTransformer, util
 
 model = SentenceTransformer("sentence-transformers/all-MiniLM-L6-v2")
 
-# Define job titles for comparison
+# Job titles for comparison
 JOB_TITLES = [
     # Technology / IT
     "Data Analyst",
